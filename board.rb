@@ -35,7 +35,7 @@ class Board
   end
 
   def columns
-    rows.transpose
+    @grid.transpose
   end
 
   def render
@@ -53,7 +53,7 @@ class Board
   alias_method :rows, :size
 
   def solved?
-    rows.all? { |row| solved_set?(row) } &&
+    @grid.all? { |row| solved_set?(row) } &&
       columns.all? { |col| solved_set?(col) } &&
       squares.all? { |square| solved_set?(square) }
   end
