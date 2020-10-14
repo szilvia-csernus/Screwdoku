@@ -8,6 +8,10 @@ puts "Does this approach feel familiar?  The approach is a version of binary sea
 
 require_relative "board"
 
+# People write terrible method names in real life.
+# On the job, it is your job to figure out how the methods work and then name them better.
+# Do this now.
+
 class SudokuGame
   def self.from_file(filename)
     board = Board.from_file(filename)
@@ -18,34 +22,35 @@ class SudokuGame
     @board = board
   end
 
-  def get_val
-    val = nil
-    until val && valid_val?(val)
-      puts "Please enter a value between 1 and 9 (0 to clear the tile)"
-      print "> "
-      val = parse_val(gets.chomp)
-    end
-    val
-  end
 
-  def get_pos
-    pos = nil
-    
+  def retrieve_pos_from_ui
+    p = nil
+    until p && valid_pos?(p)
 
-    until pos && valid_pos?(pos)
       puts "Please enter a position on the board (e.g., '3,4')"
       print "> "
 
       begin
-        pos = parse_pos(gets.chomp)
+        p = parse_pos(gets.chomp)
       rescue
         puts "Invalid position entered (did you use a comma?)"
         puts ""
 
-        pos = nil
+        p = nil
       end
     end
-    pos
+    p
+  end
+
+
+  def retrieve_value_from_ui
+    v = nil
+    until v && valid_val?(v)
+      puts "Please enter a value between 1 and 9 (0 to clear the tile)"
+      print "> "
+      v = parse_val(gets.chomp)
+    end
+    v
   end
 
   def parse_pos(string)
@@ -56,23 +61,23 @@ class SudokuGame
     Integer(string)
   end
 
-  def play_turn
+  def take_turns
     board.render
 
-    pos = get_pos
-    val = get_val
+    pos_to_val(retrieve_pos_from_ui, retrieve_value_from_ui)
+  end
 
-    board[pos] = val
+  def pos_to_val(p, v)
+    board[p] = v
   end
 
   def run
-    play_turn until solved?
-    board.render
+    take_turns until solved?
     puts "Congratulations, you win!"
   end
 
   def solved?
-    board.solved?
+    board.terminate?
   end
 
   def valid_pos?(pos)
