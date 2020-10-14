@@ -12,6 +12,8 @@ class SudokuGame
 
   def get_pos
     pos = nil
+    
+
     until pos && valid_pos?(pos)
       puts "Please enter a position on the board (e.g., '3,4')"
       print "> "
