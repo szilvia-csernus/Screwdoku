@@ -1,3 +1,11 @@
+require "colorize"
+
+puts "MUAHAHA.  The dastardly unexpected end statement.\n".red
+puts "Do NOT try to solve this error by going one method at a time and looking for an 'end'.\n".red
+puts "Instead, comment out half of the bad file at a time until the error changes.  Keep narrowing down from there.".red
+puts ""
+puts "Does this approach feel familiar?  The approach is a version of binary search.\n\n".red
+
 require_relative "board"
 
 # People write terrible method names in real life.
@@ -14,9 +22,11 @@ class SudokuGame
     @board = board
   end
 
+
   def retrieve_pos_from_ui
     p = nil
     until p && valid_pos?(p)
+
       puts "Please enter a position on the board (e.g., '3,4')"
       print "> "
 
@@ -31,6 +41,7 @@ class SudokuGame
     end
     p
   end
+
 
   def retrieve_value_from_ui
     v = nil
@@ -52,6 +63,7 @@ class SudokuGame
 
   def take_turns
     board.render
+
     pos_to_val(retrieve_pos_from_ui, retrieve_value_from_ui)
   end
 
