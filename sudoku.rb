@@ -10,6 +10,16 @@ class SudokuGame
     @board = board
   end
 
+  def get_val
+    val = nil
+    until val && valid_val?(val)
+      puts "Please enter a value between 1 and 9 (0 to clear the tile)"
+      print "> "
+      val = parse_val(gets.chomp)
+    end
+    val
+  end
+
   def get_pos
     pos = nil
     
@@ -30,16 +40,6 @@ class SudokuGame
     pos
   end
 
-  def get_val
-    val = nil
-    until val && valid_val?(val)
-      puts "Please enter a value between 1 and 9 (0 to clear the tile)"
-      print "> "
-      val = parse_val(gets.chomp)
-    end
-    val
-  end
-
   def parse_pos(string)
     string.split(",").map { |char| Integer(char) }
   end
@@ -50,8 +50,10 @@ class SudokuGame
 
   def play_turn
     board.render
+
     pos = get_pos
     val = get_val
+
     board[pos] = val
   end
 
