@@ -7,6 +7,8 @@ puts ""
 puts "Does this approach feel familiar?  The approach is a version of binary search.\n\n".red
 
 require_relative "board"
+require 'colorize'
+
 
 # People write terrible method names in real life.
 # On the job, it is your job to figure out how the methods work and then name them better.
@@ -31,8 +33,12 @@ class SudokuGame
       print "> "
 
       begin
-        p = parse_pos(gets.chomp)
-      rescue
+
+        pos = gets.chomp.split(",").map { |char| Integer(char)}
+      rescue 
+        puts  "#{$!}"
+        # TODO: Google how to print the error that happened inside of a rescue statement.
+
         puts "Invalid position entered (did you use a comma?)"
         puts ""
 
@@ -48,20 +54,16 @@ class SudokuGame
     until v && valid_val?(v)
       puts "Please enter a value between 1 and 9 (0 to clear the tile)"
       print "> "
-      v = parse_val(gets.chomp)
+
+      val = gets.chomp.to_i
+
     end
     v
   end
 
-  def parse_pos(string)
-    string.split(",").map { |char| Integer(char) }
-  end
 
-  def parse_val(string)
-    Integer(string)
-  end
+  def play_turn
 
-  def take_turns
     board.render
 
     pos_to_val(retrieve_pos_from_ui, retrieve_value_from_ui)
@@ -72,22 +74,24 @@ class SudokuGame
   end
 
   def run
-    take_turns until solved?
+
+    play_turn until board.solved?
+    board.render
     puts "Congratulations, you win!"
   end
 
-  def solved?
-    board.terminate?
-  end
-
   def valid_pos?(pos)
-    pos.is_a?(Array) &&
+    if pos.is_a?(Array) &&
       pos.length == 2 &&
-      pos.all? { |x| x.between?(0, board.size - 1) }
+      pos.all? { |x| (0..board.size - 1).include?(x) }
+      return true
+    else
+      false
+    end
   end
 
   def valid_val?(val)
-    val.is_a?(Integer) &&
+    val.is_a?(Integer) ||
       val.between?(0, 9)
   end
 
@@ -96,5 +100,5 @@ class SudokuGame
 end
 
 
-game = SudokuGame.from_file("puzzles/sudoku1.txt")
+game = SudokuGame.from_file("puzzles/sudoku1-almost.txt")
 game.run

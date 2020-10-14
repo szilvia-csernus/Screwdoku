@@ -1,10 +1,13 @@
 require_relative "tile"
 
 class Board
+  attr_reader :grid
+
   def self.empty_grid
-    Array.new(9) do
+    empty_grid = Array.new(9) do
       Array.new(9) { Tile.new(0) }
     end
+    empty_grid
   end
 
   def self.from_file(filename)
@@ -22,18 +25,18 @@ class Board
   end
 
   def [](pos)
-    x, y = pos
-    grid[x][y]
+    pos = x,y
+    @grid[x][y]
   end
 
-  def []=(pos, value)
+  def []=(pos, val)
     x, y = pos
     tile = grid[x][y]
-    tile.value = value
+    tile.value = val
   end
 
   def columns
-    rows.transpose
+    @grid.transpose
   end
 
   def render
@@ -43,16 +46,14 @@ class Board
     end
   end
 
-  def rows
-    grid
-  end
 
   def size
-    grid.size
+    @grid.size
   end
 
-  def terminate?
-    rows.all? { |row| solved_set?(row) } &&
+  def solved?
+    @grid.all? { |row| solved_set?(row) } &&
+
       columns.all? { |col| solved_set?(col) } &&
       squares.all? { |square| solved_set?(square) }
       
@@ -63,24 +64,20 @@ class Board
     nums.sort == (1..9).to_a
   end
 
-  def square(idx)
-    tiles = []
-    x = (idx / 3) * 3
-    y = (idx % 3) * 3
-
-    (x...x + 3).each do |i|
-      (y...y + 3).each do |j|
-        tiles << self[[i, j]]
-      end
-    end
-
-    tiles
-  end
-
   def squares
-    (0..8).to_a.map { |i| square(i) }
+    sq_tiles = Array.new(9) {[]}
+    
+    (0..8).to_a.each do |x| 
+        (0..8).to_a.each do |y| 
+            square_x = (x / 3) * 3
+            square_y = (y / 3) * 3
+            square_num = square_x + square_y / 3
+            sq_tiles[square_num] << @grid[x][y]
+        end
+    end
+    sq_tiles
   end
 
-  private
-  attr_reader :grid
+
 end
+
